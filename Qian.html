@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>冯钰茜的VIP会员卡</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            background: linear-gradient(rgba(248, 225, 231, 0.8), rgba(248, 225, 231, 0.8)), url('https://i.imgur.com/FNv7b40.jpeg') no-repeat center center;
+            background-size: contain;
+            background-color: #f8e1e7;
+            margin: 0;
+            flex-direction: column;
+            transition: all 0.5s ease;
+            padding-top: 280px;
+            -webkit-user-select: none;
+            user-select: none;
+            overscroll-behavior: none;
+        }
+
+        body.dark-mode {
+            background: linear-gradient(rgba(51, 51, 51, 0.9), rgba(51, 51, 51, 0.9)), url('https://i.imgur.com/QhzgmZT.jpeg') no-repeat center center;
+            background-size: contain;
+            background-color: #333;
+            color: #fff;
+        }
+
+        @media (max-width: 390px) {
+            body {
+                background-size: auto 80%;
+                background-position: center top;
+                padding-top: 230px;
+            }
+            body.dark-mode {
+                background-size: auto 80%;
+                background-position: center top;
+            }
+        }
+
+        .card-container {
+            position: fixed;
+            top: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 360px;
+            height: 220px;
+            transform-style: preserve-3d;
+            z-index: 100;
+            cursor: pointer;
+            transition: transform 0.6s ease;
+            -webkit-transform: translateX(-50%);
+        }
+
+        .card-container.flipped {
+            transform: translateX(-50%) rotateY(180deg);
+            -webkit-transform: translateX(-50%) rotateY(180deg);
+        }
+
+        .card {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            background: linear-gradient(135deg, #ff4f81, #40E0D0);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.3);
+            border: 2px solid #000000;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow: hidden;
+            -webkit-backface-visibility: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(120deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0) 100%);
+            animation: shine 7s infinite linear;
+            pointer-events: none;
+        }
+
+        .card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 200%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.05) 50%, rgba(255, 255, 255, 0) 100%);
+            animation: hologram 5s infinite ease-in-out;
+            pointer-events: none;
+        }
+
+        @keyframes hologram {
+            0% { transform: translateX(0); }
+            50% { transform: translateX(100%); }
+            100% { transform: translateX(0); }
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%); }
+            50% { transform: translateX(100%) translateY(100%); }
+            100% { transform: translateX(-100%) translateY(-100%); }
+        }
+
+        .card.front { z-index: 2; }
+        .card.back {
+            transform: rotateY(180deg);
+            z-index: 1;
+            background: linear-gradient(135deg, #ff4f81, #40E0D0);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 20px;
+            -webkit-transform: rotateY(180deg);
+        }
+
+        .bank-name {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 22px;
+            font-weight: bold;
+            z-index: 3;
+            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.5), -1px -1px 2px rgba(0, 0, 0, 0.5);
+            -webkit-transform: translateX(-50%);
+        }
+
+        .logo {
+            width: 60px;
+            position: absolute;
+            top: 10px;
+            right: 15px;
+        }
+
+        .chip {
+            width: 50px;
+            position: absolute;
+            top: 50px;
+            left: 15px;
+        }
+
+        .card-details {
+            margin-top: 80px;
+            text-align: left;
+            padding-left: 15px;
+        }
+
+        .card-number {
+            font-size: 22px;
+            letter-spacing: 2px;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.5), -1px -1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        .card-holder {
+            font-size: 18px;
+            margin-top: 5px;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.5), -1px -1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        .expiry {
+            font-size: 16px;
+            margin-top: 5px;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.5), -1px -1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        .magnetic-stripe {
+            position: absolute;
+            top: 5px;
+            left: 0;
+            width: 100%;
+            height: auto;
+            z-index: 4;
+        }
+
+        .qr-code {
+            position: absolute;
+            top: 70px;
+            right: 15px;
+            width: 140px;
+        }
+
+        .back-content {
+            text-align: left;
+            margin-top: 95px;
+            padding-left: 15px;
+            font-size: 16px;
+            line-height: 1.4;
+            color: #fff;
+        }
+
+        .back-content p {
+            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.5), -1px -1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        .back-header {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.5), -1px -1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        .points-container {
+            text-align: center;
+            width: 80%;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .dark-mode .points-container h2,
+        .dark-mode .history h3,
+        .dark-mode .history li {
+            color: #fff;
+        }
+
+        h2 { font-size: 20px; margin: 5px 0; }
+        #points {
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        #points.updated {
+            transform: scale(1.1);
+            color: #FFD700;
+            text-shadow: 0 0 5px #FFD700;
+            -webkit-transform: scale(1.1);
+        }
+
+        button, select, input[type="number"], input[type="text"] {
+            padding: 8px 15px;
+            margin: 3px;
+            background-color: #ff4f81;
+            color: #FFFFFF;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            -webkit-appearance: none;
+            touch-action: manipulation;
+        }
+
+        .dark-mode button,
+        .dark-mode select,
+        .dark-mode input[type="number"],
+        .dark-mode input[type="text"] {
+            background-color: #555;
+            color: #fff;
+        }
+
+        button:hover, select:hover, input[type="number"]:hover, input[type="text"]:hover {
+            background-color: #ff7a9e;
+        }
+
+        .dark-mode button:hover,
+        .dark-mode select:hover,
+        .dark-mode input[type="number"]:hover,
+        .dark-mode input[type="text"]:hover {
+            background-color: #777;
+        }
+
+        button:active {
+            transform: scale(0.95);
+            transition: transform 0.1s;
+            -webkit-transform: scale(0.95);
+        }
+
+        select, input[type="number"], input[type="text"] { 
+            width: 140px; 
+            -webkit-appearance: none;
+            appearance: none;
+        }
+        input[type="number"], input[type="text"] {
+            background-color: #ff4f81;
+            text-align: center;
+        }
+
+        .custom-reward {
+            margin-top: 5px;
+        }
+
+        .history {
+            margin-top: 10px;
+            max-height: 120px;
+            overflow-y: auto;
+            font-size: 14px;
+            color: #333;
+            -webkit-overflow-scrolling: touch;
+        }
+        .history ul {
+            list-style: none;
+            padding: 0;
+        }
+        .history li {
+            padding: 3px 0;
+        }
+        .history li.add { color: #28a745; }
+        .history li.subtract { color: #dc3545; }
+        .history li.redeem { color: #007bff; }
+        .history li.latest { font-weight: bold; }
+
+        #darkModeToggle {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            padding: 6px 12px;
+            background-color: #ff4f81;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            z-index: 101;
+        }
+        .dark-mode #darkModeToggle {
+            background-color: #555;
+        }
+        #darkModeToggle:hover {
+            background-color: #ff7a9e;
+        }
+        .dark-mode #darkModeToggle:hover {
+            background-color: #777;
+        }
+
+        /* Chat Bubble Styles */
+        #chatBubble {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background-color: #ff4f81;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 200;
+            color: #fff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            -webkit-tap-highlight-color: transparent;
+        }
+        #chatBubble::after {
+            content: "💬";
+            font-size: 24px;
+        }
+        #chatBubble.new-message {
+            animation: bounce 0.5s ease infinite;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        #chatBubble:hover {
+            background-color: #ff7a9e;
+        }
+        .dark-mode #chatBubble {
+            background-color: #555;
+        }
+        .dark-mode #chatBubble:hover {
+            background-color: #777;
+        }
+
+        .chat-container {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            width: 300px;
+            max-height: 70vh;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            display: none;
+            flex-direction: column;
+            z-index: 201;
+            overflow: hidden;
+            -webkit-overflow-scrolling: touch;
+        }
+        .dark-mode .chat-container {
+            background: #444;
+            color: #fff;
+        }
+        .chat-container.active {
+            display: flex;
+        }
+        #chatHeader {
+            background: #ff4f81;
+            color: #fff;
+            padding: 5px 10px;
+            font-size: 14px;
+            text-align: center;
+        }
+        .dark-mode #chatHeader {
+            background: #555;
+        }
+        #typingIndicator {
+            font-size: 12px;
+            color: #666;
+            padding: 5px;
+            text-align: center;
+        }
+        #chatMessages {
+            max-height: 50vh;
+            overflow-y: auto;
+            padding: 8px;
+            flex-grow: 1;
+            -webkit-overflow-scrolling: touch;
+        }
+        .message {
+            margin: 3px 0;
+            padding: 6px 10px;
+            border-radius: 10px;
+            max-width: 70%;
+            display: inline-block;
+            word-wrap: break-word;
+            position: relative;
+            font-size: 14px;
+        }
+        .message.qian {
+            background: #ffcccc;
+            color: #333;
+            text-align: left;
+            margin-right: auto;
+        }
+        .message.qian::before {
+            content: "❤️ ";
+            margin-right: 5px;
+        }
+        .message.liang {
+            background: #cce5ff;
+            color: #333;
+            text-align: right;
+            margin-left: auto;
+        }
+        .message.liang::before {
+            content: "⭐ ";
+            margin-right: 5px;
+        }
+        .message button {
+            padding: 2px 5px;
+            font-size: 10px;
+            margin-left: 5px;
+            background: #ddd;
+            color: #333;
+        }
+        #chatInputArea {
+            display: flex;
+            padding: 5px;
+            border-top: 1px solid #ccc;
+            flex-wrap: nowrap;
+            align-items: center;
+        }
+        .dark-mode #chatInputArea {
+            border-color: #666;
+        }
+        #chatInput {
+            flex-grow: 1;
+            width: auto;
+            margin: 0 5px;
+            padding: 5px;
+            min-width: 100px;
+        }
+        #chatInputArea button {
+            padding: 5px 10px;
+            margin: 0 2px;
+            min-width: 40px;
+        }
+
+        /* Reward List Styles */
+        #rewardList {
+            max-height: 80px;
+            overflow-y: auto;
+            border: 2px solid #ff4f81;
+            border-radius: 5px;
+            padding: 8px;
+            background: #fff;
+            margin: 5px 0;
+            color: #333;
+            -webkit-overflow-scrolling: touch;
+        }
+        .dark-mode #rewardList {
+            background: #444;
+            color: #fff;
+            border-color: #777;
+        }
+        #rewardList div {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 3px 0;
+        }
+        #rewardList span.redeem {
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        #rewardList span.redeem:hover {
+            color: #ff7a9e;
+        }
+        #rewardList button {
+            padding: 2px 5px;
+            font-size: 12px;
+            background: #ff4f81;
+            color: #fff;
+        }
+        #rewardList button:hover {
+            background: #ff7a9e;
+        }
+
+        /* Redemption Animation */
+        .coin {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: gold;
+            border-radius: 50%;
+            animation: fall 1s linear;
+        }
+        @keyframes fall {
+            0% { transform: translateY(-20px); opacity: 1; }
+            100% { transform: translateY(50px); opacity: 0; }
+        }
+
+        /* Audio Toggle */
+        #audioToggle {
+            position: fixed;
+            top: 10px;
+            right: 80px;
+            padding: 6px 12px;
+            background-color: #ff4f81;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            z-index: 101;
+        }
+        .dark-mode #audioToggle {
+            background-color: #555;
+        }
+        #audioToggle:hover {
+            background-color: #ff7a9e;
+        }
+        .dark-mode #audioToggle:hover {
+            background-color: #777;
+        }
+
+        @media (max-width: 390px) {
+            .card-container {
+                width: 300px;
+                height: 180px;
+            }
+            .bank-name { font-size: 18px; }
+            .logo { width: 50px; }
+            .chip { width: 40px; top: 40px; }
+            .card-details { margin-top: 60px; }
+            .card-number { font-size: 18px; }
+            .card-holder { font-size: 16px; }
+            .expiry { font-size: 14px; }
+            .qr-code { width: 100px; top: 60px; }
+            .back-content { margin-top: 70px; font-size: 14px; }
+            .back-header { font-size: 18px; }
+            button, select, input[type="number"], input[type="text"] {
+                padding: 6px 12px;
+                font-size: 12px;
+            }
+            select, input[type="number"], input[type="text"] { width: 120px; }
+            .history { max-height: 100px; font-size: 13px; }
+            #darkModeToggle { font-size: 10px; padding: 5px 10px; right: 10px; }
+            #audioToggle { font-size: 10px; padding: 5px 10px; right: 60px; }
+            .points-container { width: 90%; max-width: 300px; }
+            #rewardList { max-height: 60px; }
+            #chatBubble { width: 40px; height: 40px; }
+            #chatBubble::after { font-size: 20px; }
+            .chat-container { width: 260px; max-height: 60vh; bottom: 70px; right: 10px; }
+            #chatMessages { max-height: 40vh; }
+            #chatInput { min-width: 80px; }
+            #chatInputArea button { padding: 3px 8px; min-width: 35px; }
+        }
+    </style>
+</head>
+<body>
+    <button id="darkModeToggle" onclick="toggleDarkMode()">切换黑暗模式</button>
+    <button id="audioToggle" onclick="toggleAudio()">音乐开关</button>
+    <audio id="backgroundMusic" loop>
+        <source src="https://www.dropbox.com/scl/fi/yiry4syd84w5uesrdehg4/SOUNDZ-under-GROUND-DJ-Okawari-Tabeyellow-Flower-Dance.mp3?rlkey=n00uozba5xd3po4iyiiogcfd7&st=d9gon05a&raw=1" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+    <div class="card-container" onclick="flipCard()">
+        <div class="card front">
+            <div class="bank-name">心动银行</div>
+            <img class="logo" src="https://i.imgur.com/OleuXpc.jpeg" alt="Logo">
+            <img class="chip" src="https://i.imgur.com/I836XHp.png" alt="Chip">
+            <div class="card-details">
+                <p class="card-number">5201 8888 1314 9999</p>
+                <p class="expiry">有效期至: <strong>12/2099</strong></p>
+                <p class="card-holder"><strong>冯钰茜</strong></p>
+            </div>
+        </div>
+        <div class="card back">
+            <img class="magnetic-stripe" src="https://i.imgur.com/8ZLLYBn.jpeg" alt="Magnetic Stripe">
+            <img class="qr-code" src="https://i.imgur.com/3ojYXPE.png" alt="QR Code">
+            <div class="back-content">
+                <div class="back-header">心动银行 黑金卡</div>
+                <p>专属权益与服务<br>终身有效<br>全球无忧服务<br>联系客服：85000272</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="points-container">
+        <h2>VIP积分: <span id="points">0</span></h2>
+        <input type="number" id="pointsAmount" placeholder="输入积分 (+加/-减)">
+        <button onclick="adjustPoints()">调整积分</button>
+        <div id="rewardList"></div>
+        <div class="custom-reward">
+            <input type="text" id="newRewardName" placeholder="新奖励名称">
+            <input type="number" id="newRewardCost" min="1" placeholder="积分">
+            <button onclick="addReward()">添加奖励</button>
+        </div>
+        <div class="history">
+            <h3>交易记录</h3>
+            <ul id="historyList"></ul>
+            <button onclick="clearTransactionHistory()">清空交易记录</button>
+        </div>
+    </div>
+
+    <div id="chatBubble" onclick="toggleChat()"></div>
+    <div class="chat-container" id="chatContainer">
+        <div id="chatHeader">客服聊天 (点击气泡收起)</div>
+        <div id="typingIndicator"></div>
+        <div id="chatMessages"></div>
+        <div id="chatInputArea">
+            <input type="text" id="chatInput" placeholder="输入消息...">
+            <button onclick="sendMessage()">发送</button>
+            <button onclick="startVoiceInput()">🎤</button>
+            <button onclick="clearChat()">🧹</button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, addDoc, deleteDoc, getDocs, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+        import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-messaging.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyACDbq6EXRSNiNd8dGiPiTrt4mjpu5ri3w",
+            authDomain: "vip-membership-b19fe.firebaseapp.com",
+            projectId: "vip-membership-b19fe",
+            storageBucket: "vip-membership-b19fe.appspot.com",
+            messagingSenderId: "1098738124176",
+            appId: "1:1098738124176:web:77ec1c338f627026729f15"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const messaging = getMessaging(app);
+        const userRef = doc(db, "users", "vip-user");
+        const transactionsRef = collection(userRef, "transactions");
+        const rewardsRef = collection(userRef, "rewards");
+        const chatsRef = collection(userRef, "chats");
+        const typingRef = doc(db, "users", "vip-user", "status", "typing");
+
+        const currentSender = "qian"; // Changed from "liang" to "qian"
+
+        async function loadPoints() {
+            try {
+                const docSnap = await getDoc(userRef);
+                if (docSnap.exists()) {
+                    updatePointsDisplay(docSnap.data().points);
+                } else {
+                    await setDoc(userRef, { points: 0 });
+                    updatePointsDisplay(0);
+                }
+                loadHistory();
+                loadRewards();
+            } catch (error) {
+                console.error("加载积分失败:", error);
+                alert("加载积分失败，请检查网络");
+            }
+        }
+
+        async function adjustPoints() {
+            const pointsAmount = parseInt(document.getElementById("pointsAmount").value);
+            if (!pointsAmount || pointsAmount === 0) {
+                alert("请输入有效的积分数量（正数增加，负数减少）。");
+                return;
+            }
+            try {
+                const docSnap = await getDoc(userRef);
+                let currentPoints = docSnap.exists() ? docSnap.data().points : 0;
+                const newPoints = currentPoints + pointsAmount;
+
+                if (newPoints < 0) {
+                    alert("❌ 积分不足，无法减少！");
+                    return;
+                }
+
+                await updateDoc(userRef, { points: newPoints });
+                await addDoc(transactionsRef, {
+                    type: pointsAmount > 0 ? "add" : "subtract",
+                    amount: Math.abs(pointsAmount),
+                    timestamp: new Date().toISOString()
+                });
+                updatePointsDisplay(newPoints);
+                document.getElementById("pointsAmount").value = "";
+            } catch (error) {
+                console.error("调整积分失败:", error);
+                alert("调整积分失败，请检查网络");
+            }
+        }
+
+        async function redeemSpecificReward(rewardCost, rewardName) {
+            try {
+                const docSnap = await getDoc(userRef);
+                let currentPoints = docSnap.exists() ? docSnap.data().points : 0;
+                if (currentPoints >= rewardCost) {
+                    const newPoints = currentPoints - rewardCost;
+                    await updateDoc(userRef, { points: newPoints });
+                    await addDoc(transactionsRef, {
+                        type: "redeem",
+                        amount: rewardCost,
+                        reward: rewardName,
+                        timestamp: new Date().toISOString()
+                    });
+                    updatePointsDisplay(newPoints);
+                    animateRedemption();
+                    alert(`🎉 成功兑换 ${rewardName}！`);
+                } else {
+                    alert("❌ 积分不足！");
+                }
+            } catch (error) {
+                console.error("兑换积分失败:", error);
+                alert("兑换积分失败，请检查网络");
+            }
+        }
+
+        async function addReward() {
+            const name = document.getElementById("newRewardName").value.trim();
+            const cost = parseInt(document.getElementById("newRewardCost").value);
+            if (!name || !cost || cost <= 0) {
+                alert("请输入有效的奖励名称和积分！");
+                return;
+            }
+            try {
+                await addDoc(rewardsRef, { name, cost });
+                document.getElementById("newRewardName").value = "";
+                document.getElementById("newRewardCost").value = "";
+                loadRewards();
+            } catch (error) {
+                console.error("添加奖励失败:", error);
+                alert("添加奖励失败，请检查网络");
+            }
+        }
+
+        async function deleteReward(rewardId) {
+            if (confirm("确定删除此奖励吗？")) {
+                try {
+                    await deleteDoc(doc(rewardsRef, rewardId));
+                    loadRewards();
+                } catch (error) {
+                    console.error("删除奖励失败:", error);
+                    alert("删除奖励失败，请检查网络");
+                }
+            }
+        }
+
+        function loadRewards() {
+            const rewardList = document.getElementById("rewardList");
+            rewardList.innerHTML = "";
+            const q = query(rewardsRef, orderBy("cost"));
+            onSnapshot(q, (snapshot) => {
+                if (snapshot.empty) {
+                    rewardList.textContent = "请添加奖励";
+                } else {
+                    snapshot.forEach((doc) => {
+                        const data = doc.data();
+                        const div = document.createElement("div");
+                        const redeemSpan = document.createElement("span");
+                        redeemSpan.className = "redeem";
+                        redeemSpan.textContent = `${data.name} (${data.cost}积分) 🎁`;
+                        redeemSpan.onclick = () => redeemSpecificReward(data.cost, data.name);
+                        const deleteBtn = document.createElement("button");
+                        deleteBtn.textContent = "🗑️";
+                        deleteBtn.onclick = () => deleteReward(doc.id);
+                        div.appendChild(redeemSpan);
+                        div.appendChild(deleteBtn);
+                        rewardList.appendChild(div);
+                    });
+                }
+            });
+        }
+
+        function updatePointsDisplay(points) {
+            const pointsEl = document.getElementById("points");
+            pointsEl.innerText = points;
+            pointsEl.classList.add("updated");
+            setTimeout(() => pointsEl.classList.remove("updated"), 300);
+        }
+
+        function animateRedemption() {
+            const pointsEl = document.getElementById("points");
+            for (let i = 0; i < 10; i++) {
+                const coin = document.createElement("div");
+                coin.className = "coin";
+                coin.style.left = `${Math.random() * 50 - 25}px`;
+                pointsEl.appendChild(coin);
+                setTimeout(() => coin.remove(), 1000);
+            }
+        }
+
+        function loadHistory() {
+            const q = query(transactionsRef, orderBy("timestamp", "desc"));
+            onSnapshot(q, (snapshot) => {
+                const historyList = document.getElementById("historyList");
+                historyList.innerHTML = "";
+                let isFirst = true;
+                snapshot.forEach((doc) => {
+                    const data = doc.data();
+                    const li = document.createElement("li");
+                    const time = new Date(data.timestamp).toLocaleString("zh-CN", { month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" });
+                    if (data.type === "add") {
+                        li.textContent = `${time}: 增加 ${data.amount} 积分`;
+                        li.classList.add("add");
+                    } else if (data.type === "subtract") {
+                        li.textContent = `${time}: 减少 ${data.amount} 积分`;
+                        li.classList.add("subtract");
+                    } else if (data.type === "redeem") {
+                        li.textContent = `${time}: 兑换 ${data.reward} (-${data.amount} 积分)`;
+                        li.classList.add("redeem");
+                    }
+                    if (isFirst) {
+                        li.classList.add("latest");
+                        isFirst = false;
+                    }
+                    historyList.appendChild(li);
+                });
+            });
+        }
+
+        async function clearTransactionHistory() {
+            if (confirm("确定要清空所有交易记录吗？此操作不可撤销！")) {
+                try {
+                    const q = query(transactionsRef);
+                    const snapshot = await getDocs(q);
+                    const batch = [];
+                    snapshot.forEach((doc) => batch.push(deleteDoc(doc.ref)));
+                    await Promise.all(batch);
+                } catch (error) {
+                    console.error("清空交易记录失败:", error);
+                    alert("清空交易记录失败，请检查网络");
+                }
+            }
+        }
+
+        function toggleDarkMode() {
+            document.body.classList.toggle("dark-mode");
+            localStorage.setItem("darkMode", document.body.classList.contains("dark-mode"));
+        }
+
+        function flipCard() {
+            const cardContainer = document.querySelector(".card-container");
+            cardContainer.classList.toggle("flipped");
+        }
+
+        function toggleAudio() {
+            const audio = document.getElementById("backgroundMusic");
+            if (audio.paused) {
+                audio.play().catch(error => alert("音频播放失败，请检查权限或网络"));
+                document.getElementById("audioToggle").textContent = "关闭音乐";
+            } else {
+                audio.pause();
+                document.getElementById("audioToggle").textContent = "开启音乐";
+            }
+        }
+
+        // Chat Functions
+        function getRelativeTime(timestamp) {
+            const now = new Date();
+            const messageTime = new Date(timestamp);
+            const diffMs = now - messageTime;
+            const diffMins = Math.floor(diffMs / 60000);
+            if (diffMins < 1) return "刚刚";
+            if (diffMins < 60) return `${diffMins}分钟前`;
+            const diffHours = Math.floor(diffMins / 60);
+            if (diffHours < 24) return `${diffHours}小时前`;
+            return messageTime.toLocaleDateString("zh-CN");
+        }
+
+        function loadChat() {
+            const q = query(chatsRef, orderBy("timestamp", "asc"));
+            onSnapshot(q, (snapshot) => {
+                const chatMessages = document.getElementById("chatMessages");
+                const chatBubble = document.getElementById("chatBubble");
+                chatMessages.innerHTML = "";
+                let hasNewMessage = false;
+                snapshot.forEach((doc) => {
+                    const data = doc.data();
+                    const messageDiv = document.createElement("div");
+                    messageDiv.classList.add("message");
+                    messageDiv.classList.add(data.sender === "qian" ? "qian" : "liang");
+                    messageDiv.textContent = `${data.sender === "qian" ? "茜" : "良"}: ${data.message} (${getRelativeTime(data.timestamp)})`;
+                    
+                    if (data.sender === currentSender && (new Date() - new Date(data.timestamp)) < 60000) {
+                        const editBtn = document.createElement("button");
+                        editBtn.textContent = "✏️";
+                        editBtn.onclick = () => editMessage(doc.id, data.message);
+                        const deleteBtn = document.createElement("button");
+                        deleteBtn.textContent = "🗑️";
+                        deleteBtn.onclick = () => deleteMessage(doc.id);
+                        messageDiv.appendChild(editBtn);
+                        messageDiv.appendChild(deleteBtn);
+                    }
+                    
+                    if (data.sender !== currentSender && !data.read) {
+                        updateDoc(doc.ref, { read: true });
+                        hasNewMessage = true;
+                    }
+                    
+                    chatMessages.appendChild(messageDiv);
+                });
+                const latestMessage = chatMessages.lastElementChild;
+                if (latestMessage) latestMessage.scrollIntoView({ behavior: "smooth" });
+                if (hasNewMessage && !document.getElementById("chatContainer").classList.contains("active")) {
+                    chatBubble.classList.add("new-message");
+                    setTimeout(() => chatBubble.classList.remove("new-message"), 2000);
+                }
+            }, (error) => {
+                console.error("加载聊天失败:", error);
+                alert("无法加载聊天，请检查网络或Firebase配置");
+            });
+        }
+
+        async function sendMessage() {
+            const chatInput = document.getElementById("chatInput");
+            const message = chatInput.value.trim();
+            if (!message) return;
+
+            try {
+                await addDoc(chatsRef, {
+                    sender: currentSender,
+                    message: message,
+                    timestamp: new Date().toISOString(),
+                    read: false
+                });
+                chatInput.value = "";
+                localStorage.removeItem("chatDraft");
+                updateTypingStatus(false);
+            } catch (error) {
+                console.error("发送消息失败:", error);
+                alert("发送消息失败，请检查网络");
+            }
+        }
+
+        async function clearChat() {
+            if (confirm("确定要清空所有聊天记录吗？此操作不可撤销！")) {
+                try {
+                    const q = query(chatsRef);
+                    const snapshot = await getDocs(q);
+                    const batch = [];
+                    snapshot.forEach((doc) => batch.push(deleteDoc(doc.ref)));
+                    await Promise.all(batch);
+                } catch (error) {
+                    console.error("清空聊天失败:", error);
+                    alert("清空聊天失败，请检查网络");
+                }
+            }
+        }
+
+        async function editMessage(id, oldMessage) {
+            const newMessage = prompt("编辑消息:", oldMessage);
+            if (newMessage && newMessage !== oldMessage) {
+                await updateDoc(doc(chatsRef, id), { message: newMessage });
+            }
+        }
+
+        async function deleteMessage(id) {
+            if (confirm("确定删除这条消息吗？")) {
+                await deleteDoc(doc(chatsRef, id));
+            }
+        }
+
+        function updateTypingStatus(isTyping) {
+            setDoc(typingRef, { sender: currentSender, isTyping }, { merge: true });
+        }
+
+        function loadTypingStatus() {
+            onSnapshot(typingRef, (doc) => {
+                const data = doc.data();
+                const typingIndicator = document.getElementById("typingIndicator");
+                if (data && data.isTyping && data.sender !== currentSender) {
+                    typingIndicator.textContent = `${data.sender === "qian" ? "茜" : "良"} 正在输入...`;
+                } else {
+                    typingIndicator.textContent = "";
+                }
+            });
+        }
+
+        function startVoiceInput() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) {
+                alert("您的浏览器不支持语音输入");
+                return;
+            }
+            const recognition = new SpeechRecognition();
+            recognition.lang = "zh-CN";
+            recognition.onresult = (event) => {
+                const transcript = event.results[0][0].transcript;
+                document.getElementById("chatInput").value = transcript;
+            };
+            recognition.onerror = (event) => {
+                console.error("语音识别失败:", event.error);
+                alert("语音识别失败，请检查麦克风权限");
+            };
+            recognition.start();
+        }
+
+        function toggleChat() {
+            const chatContainer = document.getElementById("chatContainer");
+            chatContainer.classList.toggle("active");
+            if (chatContainer.classList.contains("active")) {
+                const chatMessages = document.getElementById("chatMessages");
+                const latestMessage = chatMessages.lastElementChild;
+                if (latestMessage) latestMessage.scrollIntoView({ behavior: "smooth" });
+            }
+        }
+
+        // Notification Functions
+        async function setupNotifications() {
+            try {
+                const permission = await Notification.requestPermission();
+                if (permission === "granted") {
+                    const token = await getToken(messaging, { vapidKey: "YOUR_VAPID_KEY_HERE" });
+                    console.log("FCM Token:", token);
+                    localStorage.setItem("fcmToken", token);
+                    onMessage(messaging, (payload) => {
+                        const notificationTitle = payload.notification.title;
+                        const notificationOptions = {
+                            body: payload.notification.body,
+                            icon: 'https://i.imgur.com/OleuXpc.jpeg'
+                        };
+                        new Notification(notificationTitle, notificationOptions);
+                    });
+                }
+            } catch (error) {
+                console.error("通知设置失败:", error);
+            }
+        }
+
+        function sendNotification(sender, message) {
+            if (Notification.permission === "granted") {
+                new Notification(`${sender} 发来消息`, {
+                    body: message,
+                    icon: 'https://i.imgur.com/OleuXpc.jpeg'
+                });
+            }
+        }
+
+        // Initialization
+        if (localStorage.getItem("darkMode") === "true") {
+            document.body.classList.add("dark-mode");
+        }
+        loadPoints();
+        loadChat();
+        setupNotifications();
+        loadTypingStatus();
+
+        document.getElementById("chatInput").addEventListener("input", (e) => {
+            localStorage.setItem("chatDraft", e.target.value);
+            updateTypingStatus(e.target.value.length > 0);
+        });
+        document.addEventListener("DOMContentLoaded", () => {
+            const draft = localStorage.getItem("chatDraft");
+            if (draft) document.getElementById("chatInput").value = draft;
+            document.getElementById("audioToggle").textContent = "开启音乐";
+        });
+
+        document.getElementById("chatInput").addEventListener("keypress", (e) => {
+            if (e.key === "Enter") sendMessage();
+        });
+
+        window.adjustPoints = adjustPoints;
+        window.redeemSpecificReward = redeemSpecificReward;
+        window.addReward = addReward;
+        window.deleteReward = deleteReward;
+        window.sendMessage = sendMessage;
+        window.clearChat = clearChat;
+        window.editMessage = editMessage;
+        window.deleteMessage = deleteMessage;
+        window.toggleDarkMode = toggleDarkMode;
+        window.startVoiceInput = startVoiceInput;
+        window.toggleChat = toggleChat;
+        window.flipCard = flipCard;
+        window.toggleAudio = toggleAudio;
+        window.clearTransactionHistory = clearTransactionHistory;
+    </script>
+</body>
+</html>
